@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { MdLocationOn, MdSearch, MdOutlineCalendarMonth } from "react-icons/md";
 import GuestOptionList from "./GuestOptionList";
+import { IOptions } from "./Interfaces";
 
 const Header = () => {
 
     const [distination, setDistination] = useState("");
     const [openOption, setOpenOption] = useState(false);
-    const [options, setOptions] = useState({
+    const [options, setOptions] = useState<IOptions>({
         adult: 1,
         children: 0,
         room: 1
