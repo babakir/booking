@@ -2,6 +2,15 @@ import { useState } from "react";
 import { MdLocationOn, MdSearch, MdOutlineCalendarMonth } from "react-icons/md";
 import GuestOptionList from "./GuestOptionList";
 import { IOptions } from "./Interfaces";
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRange } from 'react-date-range';
+
+interface IDateRange {
+    startDate: Date,
+    endDate: Date,
+    key: string,
+}
 
 const Header = () => {
 
@@ -22,6 +31,16 @@ const Header = () => {
         });
     }
 
+    const [dateRange, setDateRange] = useState<IDateRange>(
+        {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'traveling-date-range',
+        }
+    );
+
+    const [openDateRange, setOpenDateRange] = useState(false);
+
     return (
         <div className="flex rounded-3xl gap-4 border-gray-200 border mt-4 mx-8 p-1">
             <div className="flex flex-1 justify-start items-center border-r-2 p-2 gap-2">
@@ -30,14 +49,17 @@ const Header = () => {
             </div>
             <div className="flex flex-1 justify-start items-center border-r-2 p-2 gap-2">
                 <MdOutlineCalendarMonth color="blue" size={30} />
-                <span className="flex justify-center items-center">2023/06/34</span>
+                <span onClick={() => setOpenDateRange(!openDateRange)} className="flex justify-center items-center">{dateRange.startDate.toJSON().slice(0, 10)} to {dateRange.endDate.toJSON().slice(0, 10)}</span>
+                {
+                    openDateRange && <DateRange ranges={[dateRange]} onChange={(item) => setDateRange(item['traveling-date-range'] as IDateRange)} minDate={new Date()} moveRangeOnFirstSelection={true} className="absolute top-20" />
+                }
             </div>
             <div className="flex flex-1 justify-start items-center border-r-2 p-2">
-                <span onClick={() => setOpenOption(!openOption)}>{options.adult} adalt &bull; {options.children} children &bull; {options.room} room</span>
+                <span id="optionDropDown" onClick={() => setOpenOption(!openOption)}>{options.adult} adalt &bull; {options.children} children &bull; {options.room} room</span>
                 {
                     openOption &&
-                    <div className="absolute w-40 top-20">
-                        <GuestOptionList options={options} handleOptions={setOptionHandler} />
+                    <div className="absolute w-60 top-20">
+                        <GuestOptionList options={options} handleOptions={setOptionHandler} setOpenOption={setOpenOption} />
                     </div>
                 }
             </div>
